@@ -37,16 +37,23 @@ export default function IntakeFormScreen({navigation}: IntakeFormScreenProps) {
 
     if (!state.driverName.trim())
       newErrors.driverName = 'Driver name is required';
-    if (!state.driverId.trim()) newErrors.driverId = 'Driver ID is required';
+    if (!state.driverId.trim()) {
+      newErrors.driverId = 'Driver ID is required';
+    } else if (!/^\d{11}$/.test(state.driverId)) {
+      newErrors.driverId = 'Driver ID must be exactly 11 digits';
+    }
     if (!state.customerName.trim())
       newErrors.customerName = 'Customer name is required';
     if (!state.customerPhone.trim()) {
       newErrors.customerPhone = 'Phone number is required';
-    } else if (!/^[0-9+\-\s()]+$/.test(state.customerPhone)) {
-      newErrors.customerPhone = 'Invalid phone number format';
+    } else if (!/^\d{8}$/.test(state.customerPhone)) {
+      newErrors.customerPhone = 'Phone number must be exactly 8 digits';
     }
-    if (!state.vehiclePlate.trim())
+    if (!state.vehiclePlate.trim()) {
       newErrors.vehiclePlate = 'Vehicle plate is required';
+    } else if (!/^\d{1,7}$/.test(state.vehiclePlate)) {
+      newErrors.vehiclePlate = 'Plate must be numbers only, max 7 digits';
+    }
     if (!state.vehicleColor.trim())
       newErrors.vehicleColor = 'Vehicle color is required';
 
