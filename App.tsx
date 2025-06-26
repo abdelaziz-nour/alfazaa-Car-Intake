@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { NavigationContainer } from "@react-navigation/native"
 import { createStackNavigator } from "@react-navigation/stack"
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import { Alert, TouchableOpacity, Text, Image, View } from "react-native"
+import { Alert, TouchableOpacity, Text, Image, View, StyleSheet, StatusBar } from "react-native"
 import { VehicleProvider } from "./src/context/VehicleContext"
 import IntakeFormScreen from "./src/screens/IntakeFormScreen"
 import VehicleBodyScreen from "./src/screens/VehicleBodyScreen"
@@ -13,41 +13,62 @@ import HistoryScreen from "./src/screens/HistoryScreen"
 import IntakeDetailsScreen from "./src/screens/IntakeDetailsScreen"
 import DatabaseService from "./src/services/DatabaseService"
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer'
+import { theme } from "./src/styles/theme"
+import Icon from "./src/components/ui/Icon"
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
 
-function IntakeStack({ navigation }) {
+function IntakeStack({ navigation: _navigation }: { navigation: any }) {
   return (
     <Stack.Navigator
       initialRouteName="IntakeForm"
       screenOptions={{
-        headerStyle: { backgroundColor: "#767c28" },
+        headerStyle: { 
+          backgroundColor: theme.colors.primary[500],
+          elevation: 0,
+          shadowOpacity: 0,
+        },
         headerTintColor: "#fff",
-        headerTitleStyle: { fontWeight: "bold" },
+        headerTitleStyle: { 
+          fontWeight: "700",
+          fontSize: 18,
+        },
+        headerShadowVisible: false,
       }}
     >
       <Stack.Screen
         name="IntakeForm"
         component={IntakeFormScreen}
-        options={({ navigation }) => ({
-          title: "Alfazaa Company",
-          headerStyle: { backgroundColor: "#767c28" },
-          headerTintColor: "#fff",
-          headerTitleStyle: { fontWeight: "bold",fontSize:18 },
-          headerTitleAlign: "center",
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ marginLeft: 16 }}>
-              <Text style={{ color: "#fff", fontSize: 24 }}>☰</Text>
-            </TouchableOpacity>
-          ),
-        })}
+                  options={({ navigation }) => ({
+            title: "AL-FAZAA",
+            headerTitleAlign: "center",
+            headerLeft: () => (
+              <TouchableOpacity 
+                onPress={() => (navigation as any).openDrawer()} 
+                style={styles.headerButton}
+                activeOpacity={0.7}
+              >
+                <Icon name="menu" size="lg" color="#ffffff" />
+              </TouchableOpacity>
+            ),
+          })}
       />
-      <Stack.Screen name="VehicleBody" component={VehicleBodyScreen} options={{ title: "Vehicle Inspection" }} />
+      <Stack.Screen 
+        name="VehicleBody" 
+        component={VehicleBodyScreen} 
+        options={{ 
+          title: "Vehicle Inspection",
+          headerTitleAlign: "center",
+        }} 
+      />
       <Stack.Screen
         name="NotesSignature"
         component={NotesSignatureScreen}
-        options={{ title: "Notes & Signature" }}
+        options={{ 
+          title: "Notes & Signature",
+          headerTitleAlign: "center",
+        }}
       />
     </Stack.Navigator>
   )
@@ -58,44 +79,82 @@ function HistoryStack() {
     <Stack.Navigator
       initialRouteName="HistoryList"
       screenOptions={{
-        headerStyle: { backgroundColor: "#767c28" },
+        headerStyle: { 
+          backgroundColor: theme.colors.primary[500],
+          elevation: 0,
+          shadowOpacity: 0,
+        },
         headerTintColor: "#fff",
-        headerTitleStyle: { fontWeight: "bold" },
+        headerTitleStyle: { 
+          fontWeight: "700",
+          fontSize: 18,
+        },
+        headerShadowVisible: false,
       }}
     >
       <Stack.Screen
         name="HistoryList"
         component={HistoryScreen}
-        options={({ navigation }) => ({
-          title: "Intake History",
-          headerStyle: { backgroundColor: "#767c28" },
-          headerTintColor: "#fff",
-          headerTitleStyle: { fontWeight: "bold" },
-          headerTitleAlign: "center",
-          headerLeft: () => (
-            <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ marginLeft: 16 }}>
-              <Text style={{ color: "#fff", fontSize: 24 }}>☰</Text>
-            </TouchableOpacity>
-          ),
-        })}
+                  options={({ navigation }) => ({
+            title: "History",
+            headerTitleAlign: "center",
+            headerLeft: () => (
+              <TouchableOpacity 
+                onPress={() => (navigation as any).openDrawer()} 
+                style={styles.headerButton}
+                activeOpacity={0.7}
+              >
+                <Icon name="menu" size="lg" color="#ffffff" />
+              </TouchableOpacity>
+            ),
+          })}
       />
       <Stack.Screen
         name="IntakeDetails"
         component={IntakeDetailsScreen}
-        options={{ title: "Intake Details" }}
+        options={{ 
+          title: "Intake Details",
+          headerTitleAlign: "center",
+        }}
       />
     </Stack.Navigator>
   )
 }
 
-function CustomDrawerContent(props) {
+function CustomDrawerContent(props: any) {
   return (
-    <DrawerContentScrollView {...props}>
-      <View style={{ alignItems: 'center', paddingVertical: 24 }}>
-        <Image source={require('./assets/logo.png')} style={{ width: 90, height: 90, resizeMode: 'contain', marginBottom: 8 }} />
+    <View style={styles.drawerContainer}>
+      <View style={styles.drawerHeader}>
+        <View style={styles.drawerHeaderContent}>
+          <Image 
+            source={require('./assets/logo.png')} 
+            style={styles.drawerLogo} 
+          />
+          <Text style={styles.drawerTitle}>AL-FAZAA</Text>
+          <Text style={styles.drawerSubtitle}>Vehicle Intake System</Text>
+        </View>
       </View>
-      <DrawerItemList {...props} />
-    </DrawerContentScrollView>
+      
+      <DrawerContentScrollView 
+        {...props}
+        style={styles.drawerScrollView}
+        contentContainerStyle={styles.drawerScrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.drawerSection}>
+          <Text style={styles.drawerSectionTitle}>MAIN MENU</Text>
+          <DrawerItemList {...props} />
+        </View>
+      </DrawerContentScrollView>
+      
+      <View style={styles.drawerFooter}>
+        <View style={styles.drawerFooterDivider} />
+        <View style={styles.drawerFooterContent}>
+          <Text style={styles.drawerFooterText}>Al-Fazaa Company</Text>
+          <Text style={styles.drawerVersionText}>Version 1.0.0</Text>
+        </View>
+      </View>
+    </View>
   );
 }
 
@@ -116,13 +175,31 @@ export default function App() {
 
   return (
     <VehicleProvider>
+      <StatusBar backgroundColor={theme.colors.primary[500]} barStyle="light-content" />
       <NavigationContainer>
         <Drawer.Navigator
           initialRouteName="Intake"
           screenOptions={{
             headerShown: false,
-            drawerActiveTintColor: '#767c28',
-            drawerLabelStyle: { fontWeight: 'bold' },
+            drawerActiveTintColor: theme.colors.primary[700],
+            drawerInactiveTintColor: theme.colors.neutral[600],
+            drawerLabelStyle: { 
+              fontWeight: '600',
+              fontSize: 16,
+              marginLeft: -16,
+            },
+            drawerItemStyle: {
+              borderRadius: theme.borderRadius.xl,
+              marginHorizontal: 0,
+              marginVertical: theme.spacing.xs,
+              paddingHorizontal: theme.spacing.lg,
+              paddingVertical: theme.spacing.md,
+              minHeight: 56,
+            },
+            drawerActiveBackgroundColor: theme.colors.primary[100],
+            drawerInactiveBackgroundColor: 'transparent',
+            drawerType: 'front',
+            overlayColor: 'rgba(0, 0, 0, 0.5)',
           }}
           drawerContent={props => <CustomDrawerContent {...props} />}
         >
@@ -130,7 +207,7 @@ export default function App() {
             name="Intake"
             component={IntakeStack}
             options={{
-              drawerLabel: 'Intake',
+              drawerLabel: 'New Intake',
             }}
           />
           <Drawer.Screen
@@ -145,3 +222,105 @@ export default function App() {
     </VehicleProvider>
   )
 }
+
+const styles = StyleSheet.create({
+  headerButton: {
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.sm,
+    marginLeft: theme.spacing.sm,
+  },
+  
+  drawerContainer: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
+  
+  drawerHeader: {
+    backgroundColor: theme.colors.primary[500],
+    paddingTop: theme.spacing['6xl'],
+    paddingBottom: theme.spacing['3xl'],
+    ...theme.shadows.lg,
+  },
+  
+  drawerHeaderContent: {
+    alignItems: 'center',
+    paddingHorizontal: theme.spacing.xl,
+  },
+  
+  drawerLogo: {
+    width: 100,
+    height: 100,
+    resizeMode: 'contain',
+    marginBottom: theme.spacing.lg,
+    borderRadius: theme.borderRadius.full,
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    padding: theme.spacing.sm,
+  },
+  
+  drawerTitle: {
+    fontSize: theme.typography.fontSize['3xl'],
+    fontWeight: '700' as const,
+    color: '#ffffff',
+    marginBottom: theme.spacing.xs,
+    textAlign: 'center',
+    letterSpacing: 1,
+  },
+  
+  drawerSubtitle: {
+    fontSize: theme.typography.fontSize.base,
+    color: 'rgba(255, 255, 255, 0.9)',
+    textAlign: 'center',
+    fontWeight: '500' as const,
+  },
+  
+  drawerScrollView: {
+    flex: 1,
+  },
+  
+  drawerScrollContent: {
+    paddingTop: theme.spacing['2xl'],
+  },
+  
+  drawerSection: {
+    paddingHorizontal: theme.spacing.lg,
+  },
+  
+  drawerSectionTitle: {
+    fontSize: theme.typography.fontSize.xs,
+    fontWeight: '700' as const,
+    color: theme.colors.neutral[500],
+    letterSpacing: 1.5,
+    marginBottom: theme.spacing.lg,
+    marginLeft: theme.spacing.md,
+    textTransform: 'uppercase' as const,
+  },
+  
+  drawerFooter: {
+    backgroundColor: theme.colors.neutral[50],
+    paddingVertical: theme.spacing.lg,
+  },
+  
+  drawerFooterDivider: {
+    height: 1,
+    backgroundColor: theme.colors.neutral[200],
+    marginHorizontal: theme.spacing.lg,
+    marginBottom: theme.spacing.lg,
+  },
+  
+  drawerFooterContent: {
+    alignItems: 'center',
+    paddingHorizontal: theme.spacing.xl,
+  },
+  
+  drawerFooterText: {
+    fontSize: theme.typography.fontSize.sm,
+    fontWeight: '600' as const,
+    color: theme.colors.neutral[700],
+    marginBottom: theme.spacing.xs,
+  },
+  
+  drawerVersionText: {
+    fontSize: theme.typography.fontSize.xs,
+    color: theme.colors.neutral[500],
+  },
+});
