@@ -191,8 +191,8 @@ export default function HistoryScreen() {
           onChangeText={setSearch}
         />
       </View>
-      <View style={styles.filterRow}>
-        <TouchableOpacity onPress={() => setShowFromPicker(true)} style={styles.dateBtn}>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterRow}>
+      <TouchableOpacity onPress={() => setShowFromPicker(true)} style={styles.dateBtn}>
           <Text style={styles.dateBtnText}>From: {fromDate ? formatDate(fromDate) : 'Any'}</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => setShowToPicker(true)} style={styles.dateBtn}>
@@ -201,7 +201,7 @@ export default function HistoryScreen() {
         <TouchableOpacity style={styles.pdfBtn} onPress={handleShowModal}>
           <Text style={styles.pdfBtnText}>Download PDF Report</Text>
         </TouchableOpacity>
-      </View>
+        </ScrollView>
       {showFromPicker && (
         <DateTimePicker
           value={fromDate || new Date()}
@@ -335,6 +335,7 @@ const styles = StyleSheet.create({
   dateBtnText: {
     color: '#767c28',
     fontWeight: 'bold',
+    fontSize:10
   },
   pdfBtn: {
     backgroundColor: '#cf2b24',
@@ -342,6 +343,8 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     marginLeft: 8,
+    fontSize:10
+
   },
   pdfBtnText: {
     color: '#fff',

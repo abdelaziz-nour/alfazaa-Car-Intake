@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import { NavigationContainer } from "@react-navigation/native"
 import { createStackNavigator } from "@react-navigation/stack"
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import { Alert, TouchableOpacity, Text } from "react-native"
+import { Alert, TouchableOpacity, Text, Image, View } from "react-native"
 import { VehicleProvider } from "./src/context/VehicleContext"
 import IntakeFormScreen from "./src/screens/IntakeFormScreen"
 import VehicleBodyScreen from "./src/screens/VehicleBodyScreen"
@@ -12,6 +12,7 @@ import NotesSignatureScreen from "./src/screens/NotesSignatureScreen"
 import HistoryScreen from "./src/screens/HistoryScreen"
 import IntakeDetailsScreen from "./src/screens/IntakeDetailsScreen"
 import DatabaseService from "./src/services/DatabaseService"
+import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer'
 
 const Stack = createStackNavigator()
 const Drawer = createDrawerNavigator()
@@ -30,10 +31,10 @@ function IntakeStack({ navigation }) {
         name="IntakeForm"
         component={IntakeFormScreen}
         options={({ navigation }) => ({
-          title: "Vehicle Intake - Alfazaa Company",
+          title: "Alfazaa Company",
           headerStyle: { backgroundColor: "#767c28" },
           headerTintColor: "#fff",
-          headerTitleStyle: { fontWeight: "bold" },
+          headerTitleStyle: { fontWeight: "bold",fontSize:18 },
           headerTitleAlign: "center",
           headerLeft: () => (
             <TouchableOpacity onPress={() => navigation.openDrawer()} style={{ marginLeft: 16 }}>
@@ -87,6 +88,17 @@ function HistoryStack() {
   )
 }
 
+function CustomDrawerContent(props) {
+  return (
+    <DrawerContentScrollView {...props}>
+      <View style={{ alignItems: 'center', paddingVertical: 24 }}>
+        <Image source={require('./assets/logo.png')} style={{ width: 90, height: 90, resizeMode: 'contain', marginBottom: 8 }} />
+      </View>
+      <DrawerItemList {...props} />
+    </DrawerContentScrollView>
+  );
+}
+
 export default function App() {
   useEffect(() => {
     // Initialize database when app starts
@@ -112,6 +124,7 @@ export default function App() {
             drawerActiveTintColor: '#767c28',
             drawerLabelStyle: { fontWeight: 'bold' },
           }}
+          drawerContent={props => <CustomDrawerContent {...props} />}
         >
           <Drawer.Screen
             name="Intake"
