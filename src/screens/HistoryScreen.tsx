@@ -343,7 +343,7 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     paddingHorizontal: 16,
     marginLeft: 8,
-    fontSize:10
+    fontSize:10 
 
   },
   pdfBtnText: {
