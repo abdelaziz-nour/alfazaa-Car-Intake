@@ -1,28 +1,64 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+"use client"
 
-import { NewAppScreen } from '@react-native/new-app-screen';
-import { StatusBar, StyleSheet, useColorScheme, View } from 'react-native';
+import { useEffect } from "react"
+import { NavigationContainer } from "@react-navigation/native"
+import { createStackNavigator } from "@react-navigation/stack"
+import { Alert } from "react-native"
+import { VehicleProvider } from "./src/context/VehicleContext"
+import IntakeFormScreen from "./src/screens/IntakeFormScreen"
+import VehicleBodyScreen from "./src/screens/VehicleBodyScreen"
+import NotesSignatureScreen from "./src/screens/NotesSignatureScreen"
+import DatabaseService from "./src/services/DatabaseService"
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+const Stack = createStackNavigator()
+
+export default function App() {
+  useEffect(() => {
+    // Initialize database when app starts
+    const initApp = async () => {
+      try {
+        await DatabaseService.initDatabase()
+        console.log("App initialized successfully")
+      } catch (error) {
+        console.error("App initialization error:", error)
+        Alert.alert("Error", "Failed to initialize app database")
+      }
+    }
+
+    initApp()
+  }, [])
 
   return (
-    <View style={styles.container}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-      <NewAppScreen templateFileName="App.tsx" />
-    </View>
-  );
+    <VehicleProvider>
+      <NavigationContainer>
+        <Stack.Navigator
+          initialRouteName="IntakeForm"
+          screenOptions={{
+            headerStyle: { backgroundColor: "#767c28" },
+            headerTintColor: "#fff",
+            headerTitleStyle: { fontWeight: "bold" },
+          }}
+        >
+          <Stack.Screen
+            name="IntakeForm"
+            component={IntakeFormScreen}
+            options={{
+              title: "Vehicle Intake - Alfazaa Company",
+              headerStyle: { backgroundColor: "#767c28" ,}, 
+              headerTintColor: "#fff",  
+              headerTitleStyle: { fontWeight: "bold" },
+              headerTitleAlign: "center",
+            }}
+          />
+
+          <Stack.Screen name="VehicleBody" component={VehicleBodyScreen} options={{ title: "Vehicle Inspection" }} />
+          <Stack.Screen
+            name="NotesSignature"
+            component={NotesSignatureScreen}
+            options={{ title: "Notes & Signature" }}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </VehicleProvider>
+  )
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-});
-
-export default App;
