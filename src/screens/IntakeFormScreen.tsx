@@ -1,17 +1,24 @@
-import {useState} from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
-  TextInput,
-  TouchableOpacity,
-  StyleSheet,
   ScrollView,
+  StyleSheet,
   Alert,
+  SafeAreaView,
+  StatusBar,
+  KeyboardAvoidingView,
+  Platform,
 } from 'react-native';
-import {Picker} from '@react-native-picker/picker';
-import {useVehicle} from '../context/VehicleContext';
-import {NativeStackNavigationProp} from 'react-native-screens/lib/typescript/native-stack/types';
-import {RootStackParamList} from '../types';
+import { Picker } from '@react-native-picker/picker';
+import { useVehicle } from '../context/VehicleContext';
+import { NativeStackNavigationProp } from 'react-native-screens/lib/typescript/native-stack/types';
+import { RootStackParamList } from '../types';
+import { theme } from '../styles/theme';
+import Button from '../components/ui/Button';
+import Input from '../components/ui/Input';
+import Card from '../components/ui/Card';
+import Icon from '../components/ui/Icon';
 
 interface IntakeFormScreenProps {
   navigation: NativeStackNavigationProp<RootStackParamList, 'IntakeForm'>;
@@ -24,11 +31,11 @@ interface FormErrors {
   customerPhone?: string;
   vehiclePlate?: string;
   vehicleColor?: string;
-  vehicleType?: string; // Add this line
+  vehicleType?: string;
 }
 
-export default function IntakeFormScreen({navigation}: IntakeFormScreenProps) {
-  const {state, dispatch} = useVehicle();
+export default function IntakeFormScreen({ navigation }: IntakeFormScreenProps) {
+  const { state, dispatch } = useVehicle();
   const [errors, setErrors] = useState<FormErrors>({});
   const vehicleTypes = ['Sedan', 'SUV', 'Pickup', 'Van', 'Truck', 'Other'];
 
@@ -73,209 +80,251 @@ export default function IntakeFormScreen({navigation}: IntakeFormScreenProps) {
   };
 
   const updateField = (field: keyof FormErrors, value: string) => {
-    dispatch({type: 'UPDATE_FIELD', field, value});
+    dispatch({ type: 'UPDATE_FIELD', field, value });
     if (errors[field]) {
-      setErrors({...errors, [field]: null});
+      setErrors({ ...errors, [field]: undefined });
     }
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.form}>
-        <Text style={styles.title}>Vehicle Intake Form</Text>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Driver Information</Text>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Driver Name *</Text>
-            <TextInput
-              style={[styles.input, errors.driverName && styles.inputError]}
-              value={state.driverName}
-              onChangeText={value => updateField('driverName', value)}
-              placeholder="Enter driver name"
-            />
-            {errors.driverName && (
-              <Text style={styles.errorText}>{errors.driverName}</Text>
-            )}
+    <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={theme.colors.primary[500]} barStyle="light-content" />
+      
+      <KeyboardAvoidingView 
+        style={styles.flex1} 
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      >
+        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Vehicle Intake Form</Text>
+            <Text style={styles.subtitle}>Please fill in all required information</Text>
           </View>
 
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Driver ID *</Text>
-            <TextInput
-              style={[styles.input, errors.driverId && styles.inputError]}
-              value={state.driverId}
-              onChangeText={value => updateField('driverId', value)}
-              placeholder="Enter driver ID"
-            />
-            {errors.driverId && (
-              <Text style={styles.errorText}>{errors.driverId}</Text>
-            )}
-          </View>
-        </View>
+          <View style={styles.content}>
+            {/* Driver Information */}
+            <Card variant="elevated" style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Icon name="user" size="md" color={theme.colors.primary[500]} />
+                <Text style={styles.sectionTitle}>Driver Information</Text>
+              </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Customer Information</Text>
+              <Input
+                label="Driver Name"
+                required
+                value={state.driverName}
+                onChangeText={value => updateField('driverName', value)}
+                placeholder="Enter driver name"
+                error={errors.driverName}
+                leftIcon={<Icon name="user" size="sm" color={theme.colors.neutral[400]} />}
+              />
 
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Customer Name *</Text>
-            <TextInput
-              style={[styles.input, errors.customerName && styles.inputError]}
-              value={state.customerName}
-              onChangeText={value => updateField('customerName', value)}
-              placeholder="Enter customer name"
-            />
-            {errors.customerName && (
-              <Text style={styles.errorText}>{errors.customerName}</Text>
-            )}
-          </View>
+              <Input
+                label="Driver ID"
+                required
+                value={state.driverId}
+                onChangeText={value => updateField('driverId', value)}
+                placeholder="Enter 11-digit driver ID"
+                error={errors.driverId}
+                keyboardType="numeric"
+                maxLength={11}
+                leftIcon={<Text style={styles.idIcon}>ID</Text>}
+              />
+            </Card>
 
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Phone Number *</Text>
-            <TextInput
-              style={[styles.input, errors.customerPhone && styles.inputError]}
-              value={state.customerPhone}
-              onChangeText={value => updateField('customerPhone', value)}
-              placeholder="Enter phone number"
-              keyboardType="phone-pad"
-            />
-            {errors.customerPhone && (
-              <Text style={styles.errorText}>{errors.customerPhone}</Text>
-            )}
-          </View>
-        </View>
+            {/* Customer Information */}
+            <Card variant="elevated" style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Icon name="user" size="md" color={theme.colors.secondary[600]} />
+                <Text style={styles.sectionTitle}>Customer Information</Text>
+              </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Vehicle Information</Text>
+              <Input
+                label="Customer Name"
+                required
+                value={state.customerName}
+                onChangeText={value => updateField('customerName', value)}
+                placeholder="Enter customer name"
+                error={errors.customerName}
+                leftIcon={<Icon name="user" size="sm" color={theme.colors.neutral[400]} />}
+              />
 
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Vehicle Plate Number *</Text>
-            <TextInput
-              style={[styles.input, errors.vehiclePlate && styles.inputError]}
-              value={state.vehiclePlate}
-              onChangeText={value =>
-                updateField('vehiclePlate', value.toUpperCase())
-              }
-              placeholder="Enter plate number"
-              autoCapitalize="characters"
-            />
-            {errors.vehiclePlate && (
-              <Text style={styles.errorText}>{errors.vehiclePlate}</Text>
-            )}
-          </View>
+              <Input
+                label="Phone Number"
+                required
+                value={state.customerPhone}
+                onChangeText={value => updateField('customerPhone', value)}
+                placeholder="Enter 8-digit phone number"
+                error={errors.customerPhone}
+                keyboardType="phone-pad"
+                maxLength={8}
+                leftIcon={<Icon name="phone" size="sm" color={theme.colors.neutral[400]} />}
+              />
+            </Card>
 
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Vehicle Color *</Text>
-            <TextInput
-              style={[styles.input, errors.vehicleColor && styles.inputError]}
-              value={state.vehicleColor}
-              onChangeText={value => updateField('vehicleColor', value)}
-              placeholder="Enter vehicle color"
-            />
-            {errors.vehicleColor && (
-              <Text style={styles.errorText}>{errors.vehicleColor}</Text>
-            )}
-          </View>
+            {/* Vehicle Information */}
+            <Card variant="elevated" style={styles.section}>
+              <View style={styles.sectionHeader}>
+                <Icon name="car" size="md" color={theme.colors.info[500]} />
+                <Text style={styles.sectionTitle}>Vehicle Information</Text>
+              </View>
 
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Vehicle Type *</Text>
-            <View style={styles.pickerContainer}>
-              <Picker
-                selectedValue={state.vehicleType}
-                onValueChange={value => updateField('vehicleType', value)}
-                style={styles.picker}>
-                {vehicleTypes.map((type: string) => (
-                  <Picker.Item key={type} label={type} value={type} />
-                ))}
-              </Picker>
+              <Input
+                label="Vehicle Plate Number"
+                required
+                value={state.vehiclePlate}
+                onChangeText={value => updateField('vehiclePlate', value.toUpperCase())}
+                placeholder="Enter plate number"
+                error={errors.vehiclePlate}
+                autoCapitalize="characters"
+                maxLength={7}
+                keyboardType="numeric"
+              />
+
+              <Input
+                label="Vehicle Color"
+                required
+                value={state.vehicleColor}
+                onChangeText={value => updateField('vehicleColor', value)}
+                placeholder="Enter vehicle color"
+                error={errors.vehicleColor}
+              />
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Vehicle Type <Text style={styles.required}>*</Text></Text>
+                <View style={styles.pickerContainer}>
+                  <Picker
+                    selectedValue={state.vehicleType}
+                    onValueChange={value => updateField('vehicleType', value)}
+                    style={styles.picker}
+                  >
+                    {vehicleTypes.map((type: string) => (
+                      <Picker.Item key={type} label={type} value={type} />
+                    ))}
+                  </Picker>
+                </View>
+              </View>
+            </Card>
+
+            <View style={styles.buttonContainer}>
+              <Button
+                title="Continue to Vehicle Inspection"
+                onPress={handleNext}
+                fullWidth
+                rightIcon={<Icon name="next" size="md" color="#ffffff" />}
+                size="lg"
+              />
             </View>
-          </View>
-        </View>
 
-        <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-          <Text style={styles.nextButtonText}>Next →</Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+            <View style={styles.bottomPadding} />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.colors.surface,
   },
-  form: {
-    padding: 20,
+  
+  flex1: {
+    flex: 1,
   },
+  
+  scrollView: {
+    flex: 1,
+  },
+  
+  header: {
+    backgroundColor: theme.colors.primary[500],
+    paddingHorizontal: theme.spacing['2xl'],
+    paddingVertical: theme.spacing['3xl'],
+    borderBottomLeftRadius: theme.borderRadius['2xl'],
+    borderBottomRightRadius: theme.borderRadius['2xl'],
+    ...theme.shadows.lg,
+  },
+  
   title: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: theme.typography.fontSize['3xl'],
+    fontWeight: '700' as const,
+    color: '#ffffff',
     textAlign: 'center',
-    marginBottom: 30,
-    color: '#767c28',
+    marginBottom: theme.spacing.sm,
   },
+  
+  subtitle: {
+    fontSize: theme.typography.fontSize.base,
+    color: 'rgba(255, 255, 255, 0.8)',
+    textAlign: 'center',
+  },
+  
+  content: {
+    padding: theme.spacing.xl,
+    paddingTop: theme.spacing['2xl'],
+  },
+  
   section: {
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 20,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
+    marginBottom: theme.spacing['2xl'],
   },
+  
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: theme.spacing.xl,
+  },
+  
   sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
-    color: '#d2de24',
+    fontSize: theme.typography.fontSize.xl,
+    fontWeight: '600' as const,
+    color: theme.colors.neutral[800],
+    marginLeft: theme.spacing.md,
   },
+  
   inputGroup: {
-    marginBottom: 15,
+    marginBottom: theme.spacing.lg,
   },
+  
   label: {
-    fontSize: 16,
-    fontWeight: '500',
-    marginBottom: 5,
-    color: '#cf2b24',
+    fontSize: theme.typography.fontSize.sm,
+    fontWeight: '500' as const,
+    color: theme.colors.neutral[700],
+    marginBottom: theme.spacing.sm,
   },
-  input: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    backgroundColor: '#fff',
+  
+  required: {
+    color: theme.colors.error[500],
   },
-  inputError: {
-    borderColor: '#f44336',
-  },
-  errorText: {
-    color: '#f44336',
-    fontSize: 12,
-    marginTop: 5,
-  },
+  
   pickerContainer: {
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    backgroundColor: '#fff',
+    borderColor: theme.colors.neutral[200],
+    borderRadius: theme.borderRadius.lg,
+    backgroundColor: theme.colors.background,
+    ...theme.shadows.sm,
   },
+  
   picker: {
-    height: 50,
+    height: 48,
   },
-  nextButton: {
-    backgroundColor: '#d2de24',
-    borderRadius: 10,
-    padding: 15,
-    alignItems: 'center',
-    marginTop: 20,
+  
+  idIcon: {
+    fontSize: 12,
+    fontWeight: '600' as const,
+    color: theme.colors.neutral[400],
+    backgroundColor: theme.colors.neutral[100],
+    paddingHorizontal: 6,
+    paddingVertical: 2,
+    borderRadius: 4,
   },
-  nextButtonText: {
-    color: '#767c28',
-    fontSize: 18,
-    fontWeight: 'bold',
+  
+  buttonContainer: {
+    marginTop: theme.spacing['2xl'],
+    marginBottom: theme.spacing.xl,
+  },
+  
+  bottomPadding: {
+    height: theme.spacing['4xl'],
   },
 });
