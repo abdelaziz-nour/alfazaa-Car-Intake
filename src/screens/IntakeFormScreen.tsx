@@ -125,9 +125,10 @@ export default function IntakeFormScreen({ navigation }: IntakeFormScreenProps) 
                 onChangeText={value => updateField('driverId', value)}
                 placeholder="Enter 11-digit driver ID"
                 error={errors.driverId}
-                keyboardType="numeric"
+                keyboardType="phone-pad"
                 maxLength={11}
                 leftIcon={<Text style={styles.idIcon}>ID</Text>}
+                
               />
             </Card>
 
@@ -306,7 +307,7 @@ const styles = StyleSheet.create({
   },
   
   picker: {
-    height: 48,
+    height: 55,
   },
   
   idIcon: {
