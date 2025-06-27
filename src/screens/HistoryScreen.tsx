@@ -218,60 +218,56 @@ export default function HistoryScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={theme.colors.primary[500]} barStyle="light-content" />
-      
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.title}>Intake History</Text>
-        <Text style={styles.subtitle}>
-          {filtered.length} of {records.length} records
-        </Text>
-      </View>
-
-      {/* Search and Filters */}
-      <View style={styles.filtersContainer}>
-        <Input
-          placeholder="Search by any field..."
-          value={search}
-          onChangeText={setSearch}
-          leftIcon={<Icon name="search" size="md" color={theme.colors.neutral[400]} />}
-          containerStyle={styles.searchInput}
-        />
-        
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterRow}>
-          <TouchableOpacity onPress={() => setShowFromPicker(true)} style={styles.dateBtn}>
-            <Icon name="calendar" size="sm" color={theme.colors.neutral[600]} />
-            <Text style={styles.dateBtnText}>
-              From: {fromDate ? formatDate(fromDate) : 'Any'}
-            </Text>
-          </TouchableOpacity>
-          
-          <TouchableOpacity onPress={() => setShowToPicker(true)} style={styles.dateBtn}>
-            <Icon name="calendar" size="sm" color={theme.colors.neutral[600]} />
-            <Text style={styles.dateBtnText}>
-              To: {toDate ? formatDate(toDate) : 'Any'}
-            </Text>
-          </TouchableOpacity>
-          
-          {(search || fromDate || toDate) && (
-            <TouchableOpacity onPress={clearFilters} style={styles.clearBtn}>
-              <Icon name="close" size="sm" color={theme.colors.error[500]} />
-              <Text style={styles.clearBtnText}>Clear</Text>
-            </TouchableOpacity>
-          )}
-          
-          <TouchableOpacity style={styles.pdfBtn} onPress={() => setShowModal(true)}>
-            <Icon name="download" size="sm" color="#ffffff" />
-            <Text style={styles.pdfBtnText}>Reports</Text>
-          </TouchableOpacity>
-        </ScrollView>
-      </View>
-
-      {/* Records List */}
-      <ScrollView 
+      <ScrollView
         style={styles.scrollView}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
+        {/* Header */}
+        <View style={styles.header}>
+          <Text style={styles.title}>Intake History</Text>
+          <Text style={styles.subtitle}>
+            {filtered.length} of {records.length} records
+          </Text>
+        </View>
+
+        {/* Search and Filters */}
+        <View style={styles.filtersContainer}>
+          <Input
+            placeholder="Search by any field..."
+            value={search}
+            onChangeText={setSearch}
+            leftIcon={<Icon name="search" size="md" color={theme.colors.neutral[400]} />}
+            containerStyle={styles.searchInput}
+          />
+          <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.filterRow}>
+            <TouchableOpacity onPress={() => setShowFromPicker(true)} style={styles.dateBtn}>
+              <Icon name="calendar" size="sm" color={theme.colors.neutral[600]} />
+              <Text style={styles.dateBtnText}>
+                From: {fromDate ? formatDate(fromDate) : 'Any'}
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => setShowToPicker(true)} style={styles.dateBtn}>
+              <Icon name="calendar" size="sm" color={theme.colors.neutral[600]} />
+              <Text style={styles.dateBtnText}>
+                To: {toDate ? formatDate(toDate) : 'Any'}
+              </Text>
+            </TouchableOpacity>
+            {(search || fromDate || toDate) && (
+              <TouchableOpacity onPress={clearFilters} style={styles.clearBtn}>
+                <Icon name="close" size="sm" color={theme.colors.error[500]} />
+                <Text style={styles.clearBtnText}>Clear</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity style={styles.pdfBtn} onPress={() => setShowModal(true)}>
+              <Icon name="download" size="sm" color="#ffffff" />
+              <Text style={styles.pdfBtnText}>Reports</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+
+        {/* Records List */}
         <View style={styles.content}>
           {filtered.length === 0 && (
             <Card style={styles.emptyCard}>
@@ -285,18 +281,16 @@ export default function HistoryScreen() {
               </Text>
             </Card>
           )}
-          
           {filtered.map((rec, idx) => {
             const damages = rec.damageNotes || [];
             const isExpanded = expanded[rec.id] || false;
             const showDamages = isExpanded ? damages : damages.slice(0, 2);
-            
             return (
               <Card key={rec.id || idx} style={styles.recordCard}>
-                                 <TouchableOpacity 
-                   onPress={() => (navigation as any).navigate('IntakeDetails', { record: rec })}
-                   activeOpacity={0.7}
-                 >
+                <TouchableOpacity 
+                  onPress={() => (navigation as any).navigate('IntakeDetails', { record: rec })}
+                  activeOpacity={0.7}
+                >
                   {/* Record Header */}
                   <View style={styles.recordHeader}>
                     <View style={styles.recordHeaderLeft}>
@@ -314,7 +308,6 @@ export default function HistoryScreen() {
                       </Text>
                     </View>
                   </View>
-
                   {/* Record Details */}
                   <View style={styles.recordDetails}>
                     <View style={styles.detailRow}>
@@ -322,14 +315,12 @@ export default function HistoryScreen() {
                       <Text style={styles.detailLabel}>Driver:</Text>
                       <Text style={styles.detailValue}>{rec.driverName}</Text>
                     </View>
-                    
                     <View style={styles.detailRow}>
                       <Icon name="user" size="sm" color={theme.colors.neutral[400]} />
                       <Text style={styles.detailLabel}>Customer:</Text>
                       <Text style={styles.detailValue}>{rec.customerName}</Text>
                     </View>
                   </View>
-
                   {/* Damages Section */}
                   {damages.length > 0 && (
                     <View style={styles.damagesSection}>
@@ -339,7 +330,6 @@ export default function HistoryScreen() {
                           Damages ({damages.length})
                         </Text>
                       </View>
-                      
                       <View style={styles.damagesList}>
                         {showDamages.map((d, i) => (
                           <View key={i} style={styles.damageItem}>
@@ -347,7 +337,6 @@ export default function HistoryScreen() {
                             <Text style={styles.damageType}>{d.damage}</Text>
                           </View>
                         ))}
-                        
                         {damages.length > 2 && (
                           <TouchableOpacity 
                             onPress={() => toggleExpanded(rec.id)}
@@ -370,11 +359,9 @@ export default function HistoryScreen() {
               </Card>
             );
           })}
-          
           <View style={styles.bottomPadding} />
         </View>
       </ScrollView>
-
       {/* Date Pickers */}
       {showFromPicker && (
         <DateTimePicker
@@ -387,7 +374,6 @@ export default function HistoryScreen() {
           }}
         />
       )}
-      
       {showToPicker && (
         <DateTimePicker
           value={toDate || new Date()}
@@ -399,7 +385,6 @@ export default function HistoryScreen() {
           }}
         />
       )}
-
       {/* Report Modal */}
       <Modal
         visible={showModal}
@@ -411,7 +396,6 @@ export default function HistoryScreen() {
           <Card style={styles.modalContent}>
             <Text style={styles.modalTitle}>Generate Report</Text>
             <Text style={styles.modalSubtitle}>Choose the type of report to generate</Text>
-            
             <Button
               title="Today's Report"
               variant="secondary"
@@ -419,7 +403,6 @@ export default function HistoryScreen() {
               style={styles.modalBtn}
               leftIcon={<Icon name="calendar" size="md" color={theme.colors.neutral[700]} />}
             />
-            
             <Button
               title="Past Week Report"
               variant="secondary"
@@ -427,7 +410,6 @@ export default function HistoryScreen() {
               style={styles.modalBtn}
               leftIcon={<Icon name="calendar" size="md" color={theme.colors.neutral[700]} />}
             />
-            
             <Button
               title="Full Report"
               variant="secondary"
@@ -435,7 +417,6 @@ export default function HistoryScreen() {
               style={styles.modalBtn}
               leftIcon={<Icon name="download" size="md" color={theme.colors.neutral[700]} />}
             />
-            
             <Button
               title="Cancel"
               variant="ghost"
@@ -445,7 +426,6 @@ export default function HistoryScreen() {
           </Card>
         </View>
       </Modal>
-
       {/* Loading Overlay */}
       {generating && (
         <View style={styles.generatingOverlay}>

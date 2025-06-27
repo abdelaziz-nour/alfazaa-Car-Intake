@@ -89,17 +89,15 @@ export default function IntakeFormScreen({ navigation }: IntakeFormScreenProps) 
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={theme.colors.primary[500]} barStyle="light-content" />
-      
       <KeyboardAvoidingView 
         style={styles.flex1} 
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
           <View style={styles.header}>
             <Text style={styles.title}>Vehicle Intake Form</Text>
             <Text style={styles.subtitle}>Please fill in all required information</Text>
           </View>
-
           <View style={styles.content}>
             {/* Driver Information */}
             <Card variant="elevated" style={styles.section}>
@@ -107,7 +105,6 @@ export default function IntakeFormScreen({ navigation }: IntakeFormScreenProps) 
                 <Icon name="user" size="md" color={theme.colors.primary[500]} />
                 <Text style={styles.sectionTitle}>Driver Information</Text>
               </View>
-
               <Input
                 label="Driver Name"
                 required
@@ -117,7 +114,6 @@ export default function IntakeFormScreen({ navigation }: IntakeFormScreenProps) 
                 error={errors.driverName}
                 leftIcon={<Icon name="user" size="sm" color={theme.colors.neutral[400]} />}
               />
-
               <Input
                 label="Driver ID"
                 required
@@ -128,17 +124,14 @@ export default function IntakeFormScreen({ navigation }: IntakeFormScreenProps) 
                 keyboardType="phone-pad"
                 maxLength={11}
                 leftIcon={<Text style={styles.idIcon}>ID</Text>}
-                
               />
             </Card>
-
             {/* Customer Information */}
             <Card variant="elevated" style={styles.section}>
               <View style={styles.sectionHeader}>
                 <Icon name="user" size="md" color={theme.colors.secondary[600]} />
                 <Text style={styles.sectionTitle}>Customer Information</Text>
               </View>
-
               <Input
                 label="Customer Name"
                 required
@@ -148,7 +141,6 @@ export default function IntakeFormScreen({ navigation }: IntakeFormScreenProps) 
                 error={errors.customerName}
                 leftIcon={<Icon name="user" size="sm" color={theme.colors.neutral[400]} />}
               />
-
               <Input
                 label="Phone Number"
                 required
@@ -161,14 +153,12 @@ export default function IntakeFormScreen({ navigation }: IntakeFormScreenProps) 
                 leftIcon={<Icon name="phone" size="sm" color={theme.colors.neutral[400]} />}
               />
             </Card>
-
             {/* Vehicle Information */}
             <Card variant="elevated" style={styles.section}>
               <View style={styles.sectionHeader}>
                 <Icon name="car" size="md" color={theme.colors.info[500]} />
                 <Text style={styles.sectionTitle}>Vehicle Information</Text>
               </View>
-
               <Input
                 label="Vehicle Plate Number"
                 required
@@ -180,7 +170,6 @@ export default function IntakeFormScreen({ navigation }: IntakeFormScreenProps) 
                 maxLength={7}
                 keyboardType="numeric"
               />
-
               <Input
                 label="Vehicle Color"
                 required
@@ -189,7 +178,6 @@ export default function IntakeFormScreen({ navigation }: IntakeFormScreenProps) 
                 placeholder="Enter vehicle color"
                 error={errors.vehicleColor}
               />
-
               <View style={styles.inputGroup}>
                 <Text style={styles.label}>Vehicle Type <Text style={styles.required}>*</Text></Text>
                 <View style={styles.pickerContainer}>
@@ -205,7 +193,6 @@ export default function IntakeFormScreen({ navigation }: IntakeFormScreenProps) 
                 </View>
               </View>
             </Card>
-
             <View style={styles.buttonContainer}>
               <Button
                 title="Continue to Vehicle Inspection"
@@ -215,7 +202,6 @@ export default function IntakeFormScreen({ navigation }: IntakeFormScreenProps) 
                 size="lg"
               />
             </View>
-
             <View style={styles.bottomPadding} />
           </View>
         </ScrollView>
@@ -241,7 +227,7 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: theme.colors.primary[500],
     paddingHorizontal: theme.spacing['2xl'],
-    paddingVertical: theme.spacing['3xl'],
+    paddingVertical: theme.spacing['2xl'],
     borderBottomLeftRadius: theme.borderRadius['2xl'],
     borderBottomRightRadius: theme.borderRadius['2xl'],
     ...theme.shadows.lg,

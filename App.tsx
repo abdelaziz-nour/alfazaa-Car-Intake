@@ -1,10 +1,10 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { NavigationContainer } from "@react-navigation/native"
 import { createStackNavigator } from "@react-navigation/stack"
 import { createDrawerNavigator } from '@react-navigation/drawer'
-import { Alert, TouchableOpacity, Text, Image, View, StyleSheet, StatusBar } from "react-native"
+import { Alert, TouchableOpacity, Text, Image, View, StyleSheet, StatusBar, TextInput } from "react-native"
 import { VehicleProvider } from "./src/context/VehicleContext"
 import IntakeFormScreen from "./src/screens/IntakeFormScreen"
 import VehicleBodyScreen from "./src/screens/VehicleBodyScreen"
@@ -158,7 +158,53 @@ function CustomDrawerContent(props: any) {
   );
 }
 
+function PasswordScreen({ onUnlock }: { onUnlock: () => void }) {
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [show, setShow] = useState(false);
+  const correctPassword = "Abdel@ziz44983927";
+
+  const handleSubmit = () => {
+    if (password === correctPassword) {
+      setError("");
+      onUnlock();
+    } else {
+      setError("Incorrect password");
+    }
+  };
+
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center", backgroundColor: "#f5f5f5" }}>
+      <View style={{ backgroundColor: "#fff", borderRadius: 16, padding: 32, elevation: 4, minWidth: 300 }}>
+        <Text style={{ fontSize: 22, fontWeight: "bold", color: "#767c28", textAlign: "center", marginBottom: 18 }}>Enter App Password</Text>
+        <Text style={{ fontSize: 14, color: "#888", textAlign: "center", marginBottom: 18 }}>This app is protected. Please enter the password to continue.</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', borderWidth: 1, borderColor: '#ddd', borderRadius: 8, backgroundColor: '#fafafa', marginBottom: 12 }}>
+          <TextInput
+            style={{ flex: 1, padding: 12, fontSize: 16 }}
+            value={password}
+            onChangeText={setPassword}
+            placeholder="Password"
+            secureTextEntry={!show}
+            autoCapitalize="none"
+            autoCorrect={false}
+            onSubmitEditing={handleSubmit}
+          />
+          <TouchableOpacity onPress={() => setShow(s => !s)} style={{ padding: 8 }}>
+            <Text style={{ color: '#767c28', fontWeight: 'bold' }}>{show ? 'Hide' : 'Show'}</Text>
+          </TouchableOpacity>
+        </View>
+        {error ? <Text style={{ color: '#cf2b24', marginBottom: 8, textAlign: 'center' }}>{error}</Text> : null}
+        <TouchableOpacity onPress={handleSubmit} style={{ backgroundColor: '#767c28', borderRadius: 8, padding: 14, alignItems: 'center', marginTop: 8 }}>
+          <Text style={{ color: '#fff', fontWeight: 'bold', fontSize: 16 }}>Unlock</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}
+
 export default function App() {
+  const [unlocked, setUnlocked] = useState(false);
+
   useEffect(() => {
     // Initialize database when app starts
     const initApp = async () => {
@@ -172,6 +218,10 @@ export default function App() {
     }
     initApp()
   }, [])
+
+  if (!unlocked) {
+    return <PasswordScreen onUnlock={() => setUnlocked(true)} />;
+  }
 
   return (
     <VehicleProvider>
